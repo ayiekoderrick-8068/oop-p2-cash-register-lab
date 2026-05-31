@@ -2,7 +2,8 @@
 
 class CashRegister:
     def __init__(self, discount=0):
-        # Initialize properties; assigning to self.discount triggers the setter validation
+        # Task 3 Step 2: Initialize attributes
+        # Assigning to self.discount triggers the @setter validation
         self.discount = discount
         self.total = 0.0
         self.items = []
@@ -22,13 +23,12 @@ class CashRegister:
             self._discount = 0
 
     def add_item(self, item, price, quantity=1):
-        # Task 3 Step 4: Add price to total and update items list
+        # Task 3 Step 4: Add price to total and tracking lists
         self.total += price * quantity
         
         for _ in range(quantity):
             self.items.append(item)
         
-        # Track transaction for voiding capabilities
         self.previous_transactions.append({
             "item": item,
             "price": price,
@@ -36,15 +36,15 @@ class CashRegister:
         })
 
     def apply_discount(self):
-        # Task 3 Step 4: Check if there are transactions or a valid discount
+        # Task 3 Step 4: Error handling for no transactions or no discount
         if not self.previous_transactions or self.discount == 0:
             print("There is no discount to apply.")
             return
 
-        # Apply the discount percentage
+        # Apply percentage discount
         self.total -= self.total * (self.discount / 100)
         
-        # Match the exact string format expected by TestCashRegister ($800 with no decimals)
+        # Matches test_apply_discount_success_message: "$800."
         print(f"After the discount, the total comes to ${int(self.total)}.")
 
     def void_last_transaction(self):
@@ -53,15 +53,13 @@ class CashRegister:
             print("There is no transaction to void.")
             return
 
-        # Revert the total and remove the last record
+        # Remove last record and update total/items
         last = self.previous_transactions.pop()
         self.total -= last["price"] * last["quantity"]
         
-        # Prevent negative totals
         if self.total < 0:
             self.total = 0.0
 
-        # Remove the items from the items list
         for _ in range(last["quantity"]):
             if last["item"] in self.items:
                 self.items.remove(last["item"])
